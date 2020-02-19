@@ -15,12 +15,14 @@ require_once 'includes/header.php';
             <form method="post" action="#">
                 <p> Veuillez remplir les champs </p>
                 <div class="identity">
-                    <select name="patient">
-                        <?php foreach ($patientsList AS $patientInfos) { ?>
-                            <option value="<?= $patientInfos['id'] ?>"><?= $patientInfos['lastname'] . ' ' . $patientInfos['firstname'] ?>
-                            </option>
-                        <?php } ?>
-                    </select>
+                    <label for=""> Rechercher un patient: </label>
+                    <input type="text" id="searchPatient" autocomplete="off"/>
+                    <input type="hidden" id="idPatient" name="idPatient"/>
+                    <div id="suggestBox">
+                        <ul class="list-group">
+                       
+                        </ul>
+                    </div>
                 </div>
                 <div class="appointment">
                     <label for="periodpicker"> Date et heure du rendez-vous: </label>
@@ -37,6 +39,8 @@ require_once 'includes/header.php';
 </div>
 <script src="../assets/js/jquery.js"></script>
 <script src="../assets/js/jquery.datetimepicker.full.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+<script src="../assets/js/ajax.js"></script>
 <script>
     var min_date = new Date();
     jQuery.datetimepicker.setLocale('fr');
@@ -46,6 +50,7 @@ require_once 'includes/header.php';
         inline: false,
         lang: 'fr'
     });
+   
 </script>
 
 

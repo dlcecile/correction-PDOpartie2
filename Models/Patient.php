@@ -69,10 +69,11 @@ class Patient extends DataBase {
         }
         return false;
     }
-/**
- * cette methode permet de recuperer tous les patients de la clinique
- * @return type array
- */
+
+    /**
+     * cette methode permet de recuperer tous les patients de la clinique
+     * @return type array
+     */
     public function getAll() {
         $sql = 'SELECT `id`, `lastname`, `firstname`, DATE_FORMAT(`birthdate`, "%d/%m/%Y") AS birthdate, `phone`, `mail` FROM `patients`';
         $usersList = [];
@@ -83,36 +84,38 @@ class Patient extends DataBase {
         }
         return $usersList;
     }
-/**
- * cette methode permet de recupérer un patient dans la bdd si il existe
- * @return boolean|$this
- */
+
+    /**
+     * cette methode permet de recupérer un patient dans la bdd si il existe
+     * @return boolean|$this
+     */
     public function getOneById() {
         //Le code sélectionnant un patient
         $sql = 'SELECT `id`, `lastname`, `firstname`, DATE_FORMAT(`birthdate`, "%d/%m/%Y") AS birthdate, `phone`, `mail` FROM `patients` WHERE `id` = :id';
-        $sth =$this->db->prepare($sql);
+        $sth = $this->db->prepare($sql);
         $sth->bindValue(':id', $this->id, PDO::PARAM_INT);
-        if($sth->execute()){//hydrate la fonction, lui attribut des nouvelles valeurs
+        if ($sth->execute()) {//hydrate la fonction, lui attribut des nouvelles valeurs
             $patient = $sth->fetch(PDO::FETCH_OBJ);
-            if($patient){
-            $this->firstname = $patient->firstname;
-            $this->lastname = $patient->lastname;
-            $this->birthdate = $patient->birthdate;
-            $this->phone = $patient->phone;
-            $this->mail = $patient->mail;
-            return $this;
+            if ($patient) {
+                $this->firstname = $patient->firstname;
+                $this->lastname = $patient->lastname;
+                $this->birthdate = $patient->birthdate;
+                $this->phone = $patient->phone;
+                $this->mail = $patient->mail;
+                return $this;
+            }
         }
-    }
-       return false;
+        return false;
     }
 
     public function delete() {
         //Le code pour supprimer un patient
     }
-/** 
- * Methode permettant de mettre à jour les informations d'un patient
- * @return boolean|$this
- */
+
+    /**
+     * Methode permettant de mettre à jour les informations d'un patient
+     * @return boolean|$this
+     */
     public function update() {
         $sql = 'UPDATE `patients` SET `lastname`= :lastname, `firstname`= :firstname, `birthdate`= :birthdate , `phone`= :phone, `mail`= :mail WHERE `id` = :id';
         $sth = $this->db->prepare($sql);
@@ -121,11 +124,24 @@ class Patient extends DataBase {
         $sth->bindValue(':birthdate', $this->birthdate, PDO::PARAM_STR);
         $sth->bindValue(':phone', $this->phone, PDO::PARAM_STR);
         $sth->bindValue(':mail', $this->mail, PDO::PARAM_STR);
-          $sth->bindValue(':id', $this->id, PDO::PARAM_INT);
+        $sth->bindValue(':id', $this->id, PDO::PARAM_INT);
         if ($sth->execute()) {
             return $this;
         }
         return false;
     }
 
+    public function findPatient($search) {
+        $sql = 'SELECT `id`, `lastname`, `firstname` FROM `patients` WHERE `firstname` LIKE :search OR `lastname` LIKE :search';
+        $sth = $this->db->prepare($sql);
+        $sth->bindValue(':search', $search . '%', PDO::PARAM_STR);
+        $userList = [];
+        if ($sth->execute()) {
+            if ($sth instanceOf PDOStatement) {
+                // Collection des données dans un tableau associatif (FETCH_ASSOC)
+                $usersList = $sth->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return $usersList;
+        }
+    }
 }
